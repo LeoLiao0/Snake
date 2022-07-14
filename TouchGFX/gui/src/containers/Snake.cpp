@@ -5,52 +5,21 @@
 
 using namespace touchgfx;
 
-void SnakeBody::init( int cx, int cy, BitmapId bmp )
-{
-	//SnakeHead.setXY( sx, sy );
-	setBitmap( touchgfx::Bitmap(bmp) );
-	setWidth(touchgfx::Bitmap(bmp).getWidth());
-	setHeight(touchgfx::Bitmap(bmp).getHeight());
-	setBitmapPosition(0.000f, 0.000f);
-	setScale(1.000f);
-	setCameraDistance(1000.000f);
-	setOrigo((touchgfx::Bitmap(bmp).getWidth() / 2), (touchgfx::Bitmap(bmp).getHeight() / 2), 1000.000f);
-	setCamera((touchgfx::Bitmap(bmp).getWidth() / 2), (touchgfx::Bitmap(bmp).getHeight() / 2));
-	updateAngles(0.000f, 0.000f, 0.000f);
-	setRenderingAlgorithm( touchgfx::TextureMapper::BILINEAR_INTERPOLATION );
-	setVisible( true );
-
-	this->cx = cx;
-	this->cy = cy;
-	this->sx = cx - touchgfx::Bitmap(bmp).getWidth() / 2;
-	this->sy = cy - touchgfx::Bitmap(bmp).getHeight() / 2;
-
-	radius = touchgfx::Bitmap(bmp).getWidth() / 2;
-	alpha = 255;
-
-	setAlpha( alpha );
-}
-
-void SnakeBody::update( int16_t speed )
-{
-	//startMoveAnimation(sx, sy, speed, EasingEquations::elasticEaseInOut, EasingEquations::linearEaseNone);
-	moveTo( sx, sy );
-}
-
 Snake::Snake():
-directionAngle( 0 ),
+new_Angle( 0 ),
+previous_Angle( 0 ),
 current_len( 0 ),
-speed( 150 )
+SnakeSpeed( 5 )
 {
-	SnakeBodys[0].init( 120, 40, BITMAP_SANKEHEAD_ID );
-	SnakeBodys[1].init( 80, 40, BITMAP_SNAKEBODY_ID );
-	SnakeBodys[2].init( 40, 40, BITMAP_SNAKEBODY_ID );
+	snakeHead.init( 140, 40, BITMAP_SANKEHEAD_ID, 0 );
+	snakeBodys[0].init( 100, 40, BITMAP_SNAKEBODY_ID );
+	snakeBodys[1].init( 60, 40, BITMAP_SNAKEBODY_ID );
 
-	SnakeBodys[0].update( speed );
-	SnakeBodys[1].update( speed );
-	SnakeBodys[2].update( speed );
+	snakeHead.update( SnakeSpeed );
+	snakeBodys[0].update( SnakeSpeed );
+	snakeBodys[1].update( SnakeSpeed );
 
-	current_len = 3;
+	current_len = 2;
 
 	Map = this->getRect( );
 
@@ -72,119 +41,116 @@ void Snake::draw(const touchgfx::Rect& invalidatedArea) const
 	Rect meAbs;
 	translateRectToAbsolute( meAbs ); //To find our x and y coords in absolute.
 
+	/* Paint Snake Head */
+	Rect invalid = snakeHead.getRect() & invalidatedArea;
+	if ( !invalid.isEmpty() )
+	{
+        invalid.x -= snakeHead.getX();
+        invalid.y -= snakeHead.getY();
+        snakeHead.draw( invalid );
+	}
+
+	/* Paint Snake Body */
 	for( uint16_t count = 0 ; count < current_len ; count++ )
 	{
-		Rect invalid = SnakeBodys[count].getRect() & invalidatedArea;
+		invalid = snakeBodys[count].getRect() & invalidatedArea;
 
 		if ( !invalid.isEmpty() )
 		{
-            invalid.x -= SnakeBodys[count].getX();
-            invalid.y -= SnakeBodys[count].getY();
-			SnakeBodys[count].draw( invalid );
+            invalid.x -= snakeBodys[count].getX();
+            invalid.y -= snakeBodys[count].getY();
+            snakeBodys[count].draw( invalid );
 		}
 	}
 }
 
 void Snake::handleTickEvent()
 {
-	bool EatFlag = false;
-	int16_t previous_sx, previous_sy;
-	int16_t previous_cx, previous_cy;
-	int16_t next_sx, next_sy;
-
-	/*if( ++SpeedCounter < speed * 60 / 1000 )
-		return;*/
-	if( ++SpeedCounter < 7 )
-		return;
-	else
-		SpeedCounter = 0;
+	static int16_t previous_sx, previous_sy;
 
 	this->invalidate();
 
-	for( uint16_t count = 0 ; count < current_len ; count++ )
+	/* Update snake head position. */
+	/* If head is move animation is active, do not set new position */
+	if( snakeHead.isMoveAnimationRunning() == false )
 	{
-		/* Head */
-		if( count == 0 )
-		{
-			int16_t next_cx, next_cy;
-			next_sx = SnakeBodys[ count ].sx + SnakeBodys[count].radius * 2 * cos( directionAngle );
-			next_sy = SnakeBodys[ count ].sy + SnakeBodys[count].radius * 2 * sin( directionAngle );
+		float temp_Angle = snakeHead.directionAngle;
+		snakeHead.directionAngle = new_Angle;
+		previous_Angle = temp_Angle;
 
-			if( next_sx > 1024 )
-				next_sx = -40;
-			else if( next_sx < -40 )
-				next_sx = 1023;
+		/* Get next position */
+		int16_t next_sx = snakeHead.sx + snakeHead.radius * 2 * cos( snakeHead.directionAngle );
+		int16_t next_sy = snakeHead.sy + snakeHead.radius * 2 * sin( snakeHead.directionAngle );
 
-			if( next_sy > 600 )
-				next_sy = -40;
-			else if( next_sy < -40 )
-				next_sy = 599;
+		/* Detect if the snake head touches the border */
+		if( detectBorder(snakeHead.sx, snakeHead.sy, snakeHead.radius ) == true )
+			return;
 
-			next_cx = next_sx + SnakeBodys[ count ].radius;
-			next_cy = next_sy + SnakeBodys[ count ].radius;
+		previous_sx = snakeHead.sx;
+		previous_sy = snakeHead.sy;
+		snakeHead.sx = next_sx;
+		snakeHead.sy = next_sy;
 
-			EatFlag = isEatFood( next_cx, next_cy, food_cx, food_cy );
-			if( EatFlag == true )
-			{
-				if( (SnakeEatCallback != NULL) && (SnakeEatCallback->isValid()) )
-				{
-					SnakeEatCallback->execute( );
-				}
-			}
+		/* Update head Z angle */
+		snakeHead.updateZAngle( snakeHead.directionAngle );
 
-			/* Check if the next position does not intersect the boundary */
-//			if( detectBorder(next_cx, next_cy, SnakeBodys[ count ].radius) == false )
-//			{
-				previous_sx = SnakeBodys[ count ].sx;
-				previous_sy = SnakeBodys[ count ].sy;
-				SnakeBodys[ count ].sx = next_sx;
-				SnakeBodys[ count ].sy = next_sy;
-				SnakeBodys[ count ].cx = next_cx;
-				SnakeBodys[ count ].cy = next_cy;
-//			}
-//			else
-//			{
-//				return;
-//			}
-		}
-
-		/* Body */
-		else if( count < MAX_NUMBER_OF_BODY )
-		{
-			previous_cx = SnakeBodys[ count ].cx;
-			previous_cy = SnakeBodys[ count ].cy;
-			next_sx = SnakeBodys[ count ].sx;
-			next_sy = SnakeBodys[ count ].sy;
-
-			SnakeBodys[ count ].sx = previous_sx;
-			SnakeBodys[ count ].sy = previous_sy;
-			SnakeBodys[ count ].cx = previous_sx + SnakeBodys[ count ].radius;
-			SnakeBodys[ count ].cy = previous_sy + SnakeBodys[ count ].radius;
-
-			previous_sx = next_sx;
-			previous_sy = next_sy;
-		}
-		else return;
-
-		SnakeBodys[ count ].updateZAngle( directionAngle );
-		SnakeBodys[ count ].update( speed * 60 / 1000 );
+		/* to start move animation */
+		snakeHead.update( SnakeSpeed );
 	}
 
-	if( (EatFlag == true) && (current_len < MAX_NUMBER_OF_BODY) )
+	/* Update snake body. */
+	else
 	{
-		SnakeBodys[ current_len ].init( previous_cx, previous_cy, BITMAP_SNAKEBODY_ID );
-		SnakeBodys[ current_len ].updateZAngle( directionAngle );
-		SnakeBodys[ current_len ].update( speed * 60 / 1000 );
-		current_len++;
+		for( uint16_t count = 0 ; count < current_len ; count++ )
+		{
+			/* If body is move animation is active, do not set new position */
+			if( snakeBodys[ count ].isMoveAnimationRunning() == true )
+				continue;
+
+			int16_t temp_sx = snakeBodys[ count ].sx;
+			int16_t temp_sy = snakeBodys[ count ].sy;
+
+			snakeBodys[ count ].sx = previous_sx;
+			snakeBodys[ count ].sy = previous_sy;
+
+			previous_sx = temp_sx;
+			previous_sy = temp_sy;
+
+			/* to start move animation */
+			snakeBodys[ count ].update( SnakeSpeed );
+		}
+	}
+
+
+	int16_t next_cx = snakeHead.sx + snakeHead.radius;
+	int16_t next_cy = snakeHead.sy + snakeHead.radius;
+
+	/* Check that the snake is touch the food, it means snake eat the food, and increase body length */
+	if( isEatFood( next_cx, next_cy, food_cx, food_cy ) == true )
+	{
+		/* To notify the food widget to move to new position */
+		if( (SnakeEatCallback != NULL) && (SnakeEatCallback->isValid()) )
+		{
+			SnakeEatCallback->execute( );
+		}
+
+		/* Check there is one more empty space in snake body buffer */
+		if( current_len < MAX_NUMBER_OF_BODY )
+		{
+			/* To create and initialize new body */
+			snakeBodys[ current_len ].init( previous_sx, previous_sy, BITMAP_SNAKEBODY_ID );
+			snakeBodys[ current_len ].update( SnakeSpeed );
+			current_len++;
+		}
 	}
 }
 
-bool Snake::detectBorder ( int16_t cx, int16_t cy, float radius  )
+bool Snake::detectBorder ( int16_t sx, int16_t sy, float radius  )
 {
-	int16_t Left_X = cx - radius;
-	int16_t Right_X = cx + radius;
-	int16_t Up_Y = cy - radius;
-	int16_t Down_Y = cy + radius;
+	int16_t Left_X = sx;
+	int16_t Right_X = sy + radius * 2;
+	int16_t Up_Y = sy;
+	int16_t Down_Y = sy + radius * 2;
 
 	if( (Left_X < Map.x) || (Right_X > (Map.x + Map.width)) || (Up_Y < Map.y) || (Down_Y > (Map.y + Map.height)) )
 		return true;
@@ -200,7 +166,7 @@ void Snake::setMapPosition ( Rect rect )
 
 void Snake::setDirectionAngle ( float angle )
 {
-	directionAngle = angle;
+	new_Angle = angle;
 }
 
 void Snake::setFoodPosition ( int16_t cx, int16_t cy )
@@ -213,7 +179,7 @@ bool Snake::isEatFood ( int16_t Snake_cx, int16_t Snake_cy, int16_t Food_cx, int
 {
 	float dist = sqrt( (Snake_cx - Food_cx) * (Snake_cx - Food_cx) + (Snake_cy - Food_cy) * (Snake_cy - Food_cy) );
 	dist = abs( dist );
-	if( dist <= SnakeBodys[0].radius * 2 )
+	if( dist <= snakeBodys[0].radius * 2 )
 		return true;
 	else
 		return false;

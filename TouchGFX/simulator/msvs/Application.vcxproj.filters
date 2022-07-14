@@ -160,12 +160,6 @@
     <Filter Include="Source Files\gui\common">
       <UniqueIdentifier>90EA1E8C-0382-4092-6D33-64858CF66BF2</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\generated\gui_generated\screen_screen">
-      <UniqueIdentifier>B185D4D5-3A00-5F98-7C20-C8C1816FACF0</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\generated\gui_generated\screen_screen">
-      <UniqueIdentifier>99826F4D-CB70-972C-0E94-40004A4DB61D</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\generated\gui_generated\common">
       <UniqueIdentifier>19927ADF-D30F-4EF9-DC95-356145503F0A</UniqueIdentifier>
     </Filter>
@@ -183,6 +177,18 @@
     </Filter>
     <Filter Include="Header Files\generated\gui_generated\containers">
       <UniqueIdentifier>D961FBC3-169A-B90A-9111-5695615E0F11</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\gui\screen_snake_screen">
+      <UniqueIdentifier>0426CD26-0E68-FD55-C4D4-F298111FE55C</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\gui\screen_snake_screen">
+      <UniqueIdentifier>F3BB84EA-99EB-D604-0F35-9E81DDD446AE</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generated\gui_generated\screen_snake_screen">
+      <UniqueIdentifier>B0411465-860F-4028-805A-2BC6D2783E56</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generated\gui_generated\screen_snake_screen">
+      <UniqueIdentifier>BEA90803-DA87-8ACF-BB26-7CEFE089A6D8</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -213,14 +219,8 @@
     <ClCompile Include="..\..\gui\src\model\Model.cpp">
       <Filter>Source Files\gui\model</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\gui\src\screen_screen\screenPresenter.cpp">
-      <Filter>Source Files\gui\screen_screen</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\gui\src\screen_screen\screenView.cpp">
       <Filter>Source Files\gui\screen_screen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\generated\gui_generated\src\screen_screen\screenViewBase.cpp">
-      <Filter>Source Files\generated\gui_generated\screen_screen</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gui\src\containers\Snake.cpp">
       <Filter>Source Files\gui\containers</Filter>
@@ -236,6 +236,15 @@
     </ClCompile>
     <ClCompile Include="..\..\generated\gui_generated\src\containers\JoystickBase.cpp">
       <Filter>Source Files\generated\gui_generated\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\screen_snake_screen\screen_snakePresenter.cpp">
+      <Filter>Source Files\gui\screen_snake_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\screen_snake_screen\screen_snakeView.cpp">
+      <Filter>Source Files\gui\screen_snake_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\generated\gui_generated\src\screen_snake_screen\screen_snakeViewBase.cpp">
+      <Filter>Source Files\generated\gui_generated\screen_snake_screen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -667,14 +676,8 @@
     <ClInclude Include="..\..\gui\include\gui\model\ModelListener.hpp">
       <Filter>Header Files\gui\model</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\gui\include\gui\screen_screen\screenPresenter.hpp">
-      <Filter>Header Files\gui\screen_screen</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\gui\include\gui\screen_screen\screenView.hpp">
       <Filter>Header Files\gui\screen_screen</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\screen_screen\screenViewBase.hpp">
-      <Filter>Header Files\generated\gui_generated\screen_screen</Filter>
     </ClInclude>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\common\SimConstants.hpp">
       <Filter>Header Files\generated\gui_generated\common</Filter>
@@ -693,6 +696,15 @@
     </ClInclude>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\JoystickBase.hpp">
       <Filter>Header Files\generated\gui_generated\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\screen_snake_screen\screen_snakePresenter.hpp">
+      <Filter>Header Files\gui\screen_snake_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\screen_snake_screen\screen_snakeView.hpp">
+      <Filter>Header Files\gui\screen_snake_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\screen_snake_screen\screen_snakeViewBase.hpp">
+      <Filter>Header Files\generated\gui_generated\screen_snake_screen</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

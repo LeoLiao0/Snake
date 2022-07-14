@@ -20,14 +20,15 @@
     <ClCompile Include="..\..\gui\src\common\FrontendApplication.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\common\FrontendApplicationBase.cpp"/>
     <ClCompile Include="..\..\gui\src\model\Model.cpp"/>
-    <ClCompile Include="..\..\gui\src\screen_screen\screenPresenter.cpp"/>
     <ClCompile Include="..\..\gui\src\screen_screen\screenView.cpp"/>
-    <ClCompile Include="..\..\generated\gui_generated\src\screen_screen\screenViewBase.cpp"/>
     <ClCompile Include="..\..\gui\src\containers\Snake.cpp"/>
     <ClCompile Include="..\..\gui\src\containers\Food.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\containers\FoodBase.cpp"/>
     <ClCompile Include="..\..\gui\src\containers\Joystick.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\containers\JoystickBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\screen_snake_screen\screen_snakePresenter.cpp"/>
+    <ClCompile Include="..\..\gui\src\screen_snake_screen\screen_snakeView.cpp"/>
+    <ClCompile Include="..\..\generated\gui_generated\src\screen_snake_screen\screen_snakeViewBase.cpp"/>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(ApplicationRoot)\assets\texts\texts.xlsx"/>
@@ -174,15 +175,16 @@
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\common\FrontendHeapBase.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\model\Model.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\model\ModelListener.hpp"/>
-    <ClInclude Include="..\..\gui\include\gui\screen_screen\screenPresenter.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\screen_screen\screenView.hpp"/>
-    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\screen_screen\screenViewBase.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\common\SimConstants.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\containers\Snake.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\containers\Food.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\FoodBase.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\containers\Joystick.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\JoystickBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\screen_snake_screen\screen_snakePresenter.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\screen_snake_screen\screen_snakeView.hpp"/>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\screen_snake_screen\screen_snakeViewBase.hpp"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(ApplicationRoot)\generated\simulator\touchgfx.rc"/>
